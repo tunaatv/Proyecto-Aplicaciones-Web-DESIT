@@ -1,0 +1,21 @@
+# Entornos virtuales
+env/
+venv/
+.venv/
+
+# Python
+__pycache__/
+*.pyc
+
+# Django
+db.sqlite3
+
+# Node / Angular
+node_modules/
+dist/
+.angular/
+.vscode/
+
+# Archivos de entorno / config sensibles
+.env
+*.log
