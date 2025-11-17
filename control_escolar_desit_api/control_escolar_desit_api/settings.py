@@ -2,13 +2,12 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-RENDER = os.environ.get("RENDER") is not None
-# Mantén la clave secreta en variables de entorno en producción
 SECRET_KEY = '-_&+lsebec(whhw!%n@ww&1j=4-^j_if9x8$q778+99oz&!ms2'
 
-DEBUG = not RENDER  # en desarrollo
+# Puedes dejar True mientras terminas el proyecto
+DEBUG = True  
 
-# Render usará un dominio tipo *.onrender.com
+# Render usa dominio *.onrender.com
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", ".onrender.com"]
 
 INSTALLED_APPS = [
@@ -18,19 +17,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_filters',                 # necesarios para los filtros de DRF
+    'django_filters',
     'rest_framework',
-    'rest_framework.authtoken',       # conserva soporte de tokens de DRF
-    'corsheaders',                    # librería CORS actualizada
+    'rest_framework.authtoken',
+    'corsheaders',
     'control_escolar_desit_api',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    # Whitenoise para servir estáticos en Render
+    # Whitenoise para estáticos en Render
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',     # CORS debe ir antes de CommonMiddleware
+    'corsheaders.middleware.CorsMiddleware',  # antes de CommonMiddleware
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -38,12 +37,14 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-#CORS
+# --- CORS ---
+# mientras pruebas en la nube, puedes dejarlo abierto
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
+# cuando ya tengas la URL final de Vercel puedes afinarlo a:
 # CORS_ALLOWED_ORIGINS = [
-#     'http://localhost:4200',
-#     'https://TU-FRONT.vercel.app',
+#     "https://TU-FRONT.vercel.app",
+#     "http://localhost:4200",
 # ]
 
 ROOT_URLCONF = 'control_escolar_desit_api.urls'
@@ -51,7 +52,7 @@ ROOT_URLCONF = 'control_escolar_desit_api.urls'
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
-#Estáticos, para Render y Whitenoise
+# --- Estáticos para Render + Whitenoise ---
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
@@ -74,26 +75,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'control_escolar_desit_api.wsgi.application'
 
-if RENDER:
-    # Base de datos simple para Render (SQLite)
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'OPTIONS': {
+            'read_default_file': os.path.join(BASE_DIR, "my.cnf"),
+            'charset': 'utf8mb4',
         }
     }
-else:
-    # Configuración que ya usas en tu máquina con MySQL + my.cnf
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.mysql",
-            "OPTIONS": {
-                "read_default_file": os.path.join(BASE_DIR, "my.cnf"),
-                "charset": "utf8mb4",
-            },
-        }
-    }
-
+}
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},

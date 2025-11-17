@@ -20,6 +20,14 @@ class AdminAll(generics.CreateAPIView):
         return Response(lista, 200)
 
 class AdminView(generics.CreateAPIView):
+
+    def get_permissions(self):
+        # Registro abierto
+        if self.request.method == "POST":
+            return [permissions.AllowAny()]
+        # Ver, actualizar, eliminar: requiere login
+        return [permissions.IsAuthenticated()]
+    
     #Obtener usuario por ID
     permission_classes = (permissions.IsAuthenticated,)
     def get(self, request, *args, **kwargs):

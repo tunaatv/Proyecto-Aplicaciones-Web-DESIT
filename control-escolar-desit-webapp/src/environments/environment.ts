@@ -3,6 +3,6 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: true,
-  url_api: "https://proyecto-aplicaciones-web-desit.onrender.com"
+  production: false,
+  url_api: "http://127.0.0.1:8000"
 };

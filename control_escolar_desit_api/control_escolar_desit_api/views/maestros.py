@@ -27,6 +27,14 @@ class MaestrosAll(generics.CreateAPIView):
         return Response(lista, 200)
     
 class MaestrosView(generics.CreateAPIView):
+
+    def get_permissions(self):
+        # Registro abierto
+        if self.request.method == "POST":
+            return [permissions.AllowAny()]
+        # Ver, actualizar, eliminar: requiere login
+        return [permissions.IsAuthenticated()]
+    
     #Registrar nuevo usuario maestro
     @transaction.atomic
     def post(self, request, *args, **kwargs):
