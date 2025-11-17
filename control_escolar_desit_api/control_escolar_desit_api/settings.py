@@ -7,7 +7,9 @@ SECRET_KEY = '-_&+lsebec(whhw!%n@ww&1j=4-^j_if9x8$q778+99oz&!ms2'
 
 DEBUG = True  # en desarrollo
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+# Render usará un dominio tipo *.onrender.com
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", ".onrender.com"]
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -24,6 +26,8 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    # Whitenoise para servir estáticos en Render
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',     # CORS debe ir antes de CommonMiddleware
     'django.middleware.common.CommonMiddleware',
@@ -33,25 +37,23 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# Configuración de CORS: define orígenes permitidos y quita CORS_ORIGIN_ALLOW_ALL
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:4200',
-]
+#CORS
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
+# CORS_ALLOWED_ORIGINS = [
+#     'http://localhost:4200',
+#     'https://TU-FRONT.vercel.app',
+# ]
 
 ROOT_URLCONF = 'control_escolar_desit_api.urls'
-
-
-
-import os
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
+#Estáticos, para Render y Whitenoise
 STATIC_URL = "/static/"
-# STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-# TEMPLATES[0]["DIRS"] = [os.path.join(BASE_DIR, "templates")]
-# STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 TEMPLATES = [
     {
@@ -93,8 +95,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
-
-STATIC_URL = '/static/'
 
 REST_FRAMEWORK = {
     'COERCE_DECIMAL_TO_STRING': False,
