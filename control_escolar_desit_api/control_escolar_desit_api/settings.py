@@ -2,10 +2,11 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+RENDER = os.environ.get("RENDER") is not None
 # Mantén la clave secreta en variables de entorno en producción
 SECRET_KEY = '-_&+lsebec(whhw!%n@ww&1j=4-^j_if9x8$q778+99oz&!ms2'
 
-DEBUG = True  # en desarrollo
+DEBUG = not RENDER  # en desarrollo
 
 # Render usará un dominio tipo *.onrender.com
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", ".onrender.com"]
@@ -73,15 +74,26 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'control_escolar_desit_api.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'OPTIONS': {
-            'read_default_file': os.path.join(BASE_DIR, "my.cnf"),
-            'charset': 'utf8mb4',
+if RENDER:
+    # Base de datos simple para Render (SQLite)
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
         }
     }
-}
+else:
+    # Configuración que ya usas en tu máquina con MySQL + my.cnf
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.mysql",
+            "OPTIONS": {
+                "read_default_file": os.path.join(BASE_DIR, "my.cnf"),
+                "charset": "utf8mb4",
+            },
+        }
+    }
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
