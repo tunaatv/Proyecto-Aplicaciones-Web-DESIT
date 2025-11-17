@@ -38,7 +38,9 @@ export class RegistroMaestrosComponent implements OnInit {
     {value: '5', viewValue: 'Matemáticas'},
   ];
 
-  public materias:any[] = [];
+  public materias:any[] = [
+    {nombre: 'Programación I'}
+  ];
 
   constructor(
     private router: Router,

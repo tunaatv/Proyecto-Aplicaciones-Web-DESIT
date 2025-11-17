@@ -71,7 +71,7 @@ class Materias(models.Model):
     hora_fin    = models.TimeField(null=True, blank=True)
     salon = models.CharField(max_length=50)
     carrera = models.CharField(max_length=255)
-    maestro = models.CharField(max_length=255)  # nombre del profesor que elegiste en el combo
+    maestro = models.CharField(max_length=255)
     creditos = models.IntegerField()
     creation = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     update = models.DateTimeField(auto_now=True, null=True, blank=True)
