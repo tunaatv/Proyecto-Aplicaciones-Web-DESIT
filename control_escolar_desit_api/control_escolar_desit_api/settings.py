@@ -1,153 +1,115 @@
 import os
-from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# ==========================
-# Básico
-# ==========================
+# Mantén la clave secreta en variables de entorno en producción
+SECRET_KEY = '-_&+lsebec(whhw!%n@ww&1j=4-^j_if9x8$q778+99oz&!ms2'
 
-SECRET_KEY = "-_&+lsebec(whhw!%n@ww&1j=4-^j_if9x8$q778+99oz&!ms2"
+DEBUG = True  # en desarrollo
 
-# Déjalo en True para que sea fácil depurar en Render y local
-DEBUG = True
-
-# Acepta peticiones desde local, Render y cualquier otro host
-ALLOWED_HOSTS = [
-    "localhost",
-    "127.0.0.1",
-    "proyecto-aplicaciones-web-desit.onrender.com",
-    # si quieres, puedes abrirlo del todo:
-    "*",
-]
-
-# ==========================
-# Apps
-# ==========================
+ALLOWED_HOSTS = ["*"]
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
-
-    "django_filters",
-    "rest_framework",
-    "rest_framework.authtoken",
-    "corsheaders",
-
-    "control_escolar_desit_api",
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'django_filters',                 # necesarios para los filtros de DRF
+    'rest_framework',
+    'rest_framework.authtoken',       # conserva soporte de tokens de DRF
+    'corsheaders',                    # librería CORS actualizada
+    'control_escolar_desit_api',
 ]
-
-# ==========================
-# Middleware
-# ==========================
 
 MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
-    # Whitenoise para servir estáticos en Render
-    "whitenoise.middleware.WhiteNoiseMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
-
-    # CORS SIEMPRE antes de CommonMiddleware
-    "corsheaders.middleware.CorsMiddleware",
-    "django.middleware.common.CommonMiddleware",
-
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',     # CORS debe ir antes de CommonMiddleware
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# ==========================
-# CORS (abierto para no batallar)
-# ==========================
+# Configuración de CORS: define orígenes permitidos y quita CORS_ORIGIN_ALLOW_ALL
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:4200",
+    "https://proyecto-aplicaciones-web-desit-9b6c.vercel.app",
+    "https://proyecto-aplicaciones-web-de-git-39f7f8-renes-projects-23b78116.vercel.app",
+    "https://proyecto-aplicaciones-web-desit-9b6c-dx2etoh6q.vercel.app",
+]
 
-CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
-# ==========================
-# URLs / plantillas
-# ==========================
+ROOT_URLCONF = 'control_escolar_desit_api.urls'
 
-ROOT_URLCONF = "control_escolar_desit_api.urls"
+
+
+import os
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+STATIC_URL = "/static/"
+# STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+# TEMPLATES[0]["DIRS"] = [os.path.join(BASE_DIR, "templates")]
+# STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
 TEMPLATES = [
     {
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
-        "APP_DIRS": True,
-        "OPTIONS": {
-            "context_processors": [
-                "django.template.context_processors.debug",
-                "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = "control_escolar_desit_api.wsgi.application"
-
-# ==========================
-# Base de datos (SOLO SQLite)
-# ==========================
+WSGI_APPLICATION = 'control_escolar_desit_api.wsgi.application'
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'OPTIONS': {
+            'read_default_file': os.path.join(BASE_DIR, "my.cnf"),
+            'charset': 'utf8mb4',
+        }
     }
 }
 
-# ==========================
-# Password validators
-# ==========================
-
 AUTH_PASSWORD_VALIDATORS = [
-    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
-    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
-    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# ==========================
-# Internacionalización
-# ==========================
-
-LANGUAGE_CODE = "en-us"
-TIME_ZONE = "UTC"
+LANGUAGE_CODE = 'en-us'
+TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-# ==========================
-# Estáticos / media
-# ==========================
-
-STATIC_URL = "/static/"
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-
-MEDIA_URL = "/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-
-# ==========================
-# DRF
-# ==========================
+STATIC_URL = '/static/'
 
 REST_FRAMEWORK = {
-    "COERCE_DECIMAL_TO_STRING": False,
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
-    "PAGE_SIZE": 10,
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework.authentication.SessionAuthentication",
-        "control_escolar_desit_api.models.BearerTokenAuthentication",
+    'COERCE_DECIMAL_TO_STRING': False,
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+        'control_escolar_desit_api.models.BearerTokenAuthentication',
     ),
-    "DEFAULT_FILTER_BACKENDS": (
-        "django_filters.rest_framework.DjangoFilterBackend",
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
     ),
 }
