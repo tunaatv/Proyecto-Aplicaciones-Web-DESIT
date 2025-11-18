@@ -34,10 +34,10 @@ INSTALLED_APPS = [
 
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-
-    'corsheaders.middleware.CorsMiddleware',     # CORS debe ir antes de CommonMiddleware
     'django.middleware.common.CommonMiddleware',
 
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -48,10 +48,14 @@ MIDDLEWARE = [
 
 
 # Configuración de CORS: orígenes permitidos (front local y front en Vercel)
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:4200',
-    'https://proyecto-aplicaciones-web-desit-rj3.vercel.app',
-]
+#CORS_ALLOWED_ORIGINS = [
+#    'http://localhost:4200',
+#    'https://proyecto-aplicaciones-web-desit-rj3.vercel.app',
+#]
+
+#aceptar peticiones desde cualquier origen
+CORS_ALLOW_ALL_ORIGINS = True
+
 CORS_ALLOW_CREDENTIALS = True
 
 #
