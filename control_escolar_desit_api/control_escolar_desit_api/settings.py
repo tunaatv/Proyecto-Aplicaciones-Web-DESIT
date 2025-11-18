@@ -56,7 +56,7 @@ CORS_ALLOW_CREDENTIALS = True
 
 #
 CSRF_TRUSTED_ORIGINS = [
-    'https://proyecto-aplicaciones-web-desit.onrender.com',
+    'https://proyecto-aplicaciones-web-desit-api.onrender.com',
 ]
 
 
