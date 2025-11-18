@@ -1,33 +1,30 @@
 import os
 from pathlib import Path
 
-# ==========================
-# Rutas base
-# ==========================
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ==========================
-# Variables básicas
+# Básico
 # ==========================
 
-# En Render define SECRET_KEY en Environment
-SECRET_KEY = os.environ.get(
-    "SECRET_KEY",
-    "-_&+lsebec(whhw!%n@ww&1j=4-^j_if9x8$q778+99oz&!ms2",  # solo para desarrollo local
-)
+SECRET_KEY = "-_&+lsebec(whhw!%n@ww&1j=4-^j_if9x8$q778+99oz&!ms2"
 
-# Por defecto False en producción, True en local si no se define
-DEBUG = os.environ.get("DEBUG", "False") == "True"
+# Déjalo en True para que sea fácil depurar en Render y local
+DEBUG = True
 
-# ALLOWED_HOSTS desde env, con valores por defecto válidos
-ALLOWED_HOSTS = os.environ.get(
-    "ALLOWED_HOSTS",
-    "localhost,127.0.0.1,proyecto-aplicaciones-web-desit.onrender.com",
-).split(",")
+# Acepta peticiones desde local, Render y cualquier otro host
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    "proyecto-aplicaciones-web-desit.onrender.com",
+    # si quieres, puedes abrirlo del todo:
+    "*",
+]
 
 # ==========================
-# Aplicaciones instaladas
+# Apps
 # ==========================
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -47,9 +44,10 @@ INSTALLED_APPS = [
 # ==========================
 # Middleware
 # ==========================
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    # Whitenoise para archivos estáticos en Render
+    # Whitenoise para servir estáticos en Render
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
 
@@ -64,25 +62,16 @@ MIDDLEWARE = [
 ]
 
 # ==========================
-# CORS
+# CORS (abierto para no batallar)
 # ==========================
 
-# Si pones CORS_ALLOWED_ORIGINS en Render, se usa; si no, se abre para todos
-cors_env = os.environ.get("CORS_ALLOWED_ORIGINS")
-if cors_env:
-    CORS_ALLOW_ALL_ORIGINS = False
-    CORS_ALLOWED_ORIGINS = [
-        origin.strip() for origin in cors_env.split(",") if origin.strip()
-    ]
-else:
-    # Más sencillo mientras pruebas: todo permitido
-    CORS_ALLOW_ALL_ORIGINS = True
-
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
 # ==========================
-# URLs y plantillas
+# URLs / plantillas
 # ==========================
+
 ROOT_URLCONF = "control_escolar_desit_api.urls"
 
 TEMPLATES = [
@@ -104,32 +93,20 @@ TEMPLATES = [
 WSGI_APPLICATION = "control_escolar_desit_api.wsgi.application"
 
 # ==========================
-# Base de datos
+# Base de datos (SOLO SQLite)
 # ==========================
 
-# Si existe la variable RENDER (en Render la pusimos a "1"), usamos SQLite
-if os.environ.get("RENDER"):
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-        }
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
-else:
-    # Configuración local con MySQL usando my.cnf
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.mysql",
-            "OPTIONS": {
-                "read_default_file": os.path.join(BASE_DIR, "my.cnf"),
-                "charset": "utf8mb4",
-            },
-        }
-    }
+}
 
 # ==========================
 # Password validators
 # ==========================
+
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
@@ -140,6 +117,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # ==========================
 # Internacionalización
 # ==========================
+
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
@@ -147,8 +125,9 @@ USE_L10N = True
 USE_TZ = True
 
 # ==========================
-# Archivos estáticos y media
+# Estáticos / media
 # ==========================
+
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
@@ -159,6 +138,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 # ==========================
 # DRF
 # ==========================
+
 REST_FRAMEWORK = {
     "COERCE_DECIMAL_TO_STRING": False,
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
