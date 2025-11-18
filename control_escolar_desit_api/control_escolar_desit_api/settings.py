@@ -54,7 +54,7 @@ CORS_ALLOWED_ORIGINS = [
 ]
 CORS_ALLOW_CREDENTIALS = True
 
-# IMPORTANTE: cambia TU-BACKEND por la URL real que te dé Render
+#
 CSRF_TRUSTED_ORIGINS = [
     'https://proyecto-aplicaciones-web-desit.onrender.com',
 ]
