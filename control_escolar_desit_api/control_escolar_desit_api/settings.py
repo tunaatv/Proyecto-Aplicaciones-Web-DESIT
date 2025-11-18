@@ -2,10 +2,9 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# Mantén la clave secreta en variables de entorno en producción
 SECRET_KEY = os.environ.get(
     "DJANGO_SECRET_KEY",
-    "-_&+lsebec(whhw!%n@ww&1j=4-^j_if9x8$q778+99oz&!ms2"  # valor por defecto para desarrollo
+    "-_&+lsebec(whhw!%n@ww&1j=4-^j_if9x8$q778+99oz&!ms2"
 )
 
 DEBUG = os.environ.get("DJANGO_DEBUG", "True") == "True"
@@ -47,7 +46,7 @@ MIDDLEWARE = [
 ]
 
 
-# Configuración de CORS: orígenes permitidos (front local y front en Vercel)
+# Configuración de CORS
 #CORS_ALLOWED_ORIGINS = [
 #    'http://localhost:4200',
 #    'https://proyecto-aplicaciones-web-desit-rj3.vercel.app',
