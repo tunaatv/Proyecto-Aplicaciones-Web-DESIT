@@ -3,6 +3,7 @@ import { forkJoin } from 'rxjs';
 import { AdministradoresService } from 'src/app/services/administradores.service';
 import { MaestrosService } from 'src/app/services/maestros.service';
 import { AlumnosService } from 'src/app/services/alumnos.service';
+import { MateriasService } from 'src/app/services/materias.service';
 import { Chart, registerables } from 'chart.js';
 
 Chart.register(...registerables);
@@ -14,22 +15,33 @@ Chart.register(...registerables);
 })
 export class GraficasScreenComponent implements OnInit, AfterViewInit {
 
-  // Totales
-  totalAdmins  = 0;
+  //usuarios
+  totalAdmins   = 0;
   totalMaestros = 0;
   totalAlumnos  = 0;
 
-  // Para saber cuándo podemos dibujar
+  //materias por día
+  materiasPorDiaLabels: string[] = [
+    'Lunes',
+    'Martes',
+    'Miércoles',
+    'Jueves',
+    'Viernes'
+  ];
+  materiasPorDiaData: number[] = [];
+
+  //materias por carrera
+  programasLabels: string[] = [];
+  programasData: number[] = [];
+
   private viewReady = false;
   private dataReady = false;
 
-  // Referencias a los canvas
   @ViewChild('histCanvas') histCanvas!: ElementRef<HTMLCanvasElement>;
-  @ViewChild('barCanvas')  barCanvas!: ElementRef<HTMLCanvasElement>;
-  @ViewChild('pieCanvas')  pieCanvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('barCanvas') barCanvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('pieCanvas') pieCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('doughnutCanvas') doughnutCanvas!: ElementRef<HTMLCanvasElement>;
 
-  // Instancias de Chart
   private histChart?: Chart;
   private barChart?: Chart;
   private pieChart?: Chart;
@@ -38,11 +50,12 @@ export class GraficasScreenComponent implements OnInit, AfterViewInit {
   constructor(
     private adminService: AdministradoresService,
     private maestroService: MaestrosService,
-    private alumnoService: AlumnosService
+    private alumnoService: AlumnosService,
+    private materiasService: MateriasService
   ) {}
 
   ngOnInit(): void {
-    this.cargarTotales();
+    this.cargarDatos();
   }
 
   ngAfterViewInit(): void {
@@ -50,63 +63,98 @@ export class GraficasScreenComponent implements OnInit, AfterViewInit {
     this.tryBuildCharts();
   }
 
-  private cargarTotales(): void {
+  private cargarDatos(): void {
     forkJoin({
-      admins:  this.adminService.obtenerListaAdmins(),
+      admins:   this.adminService.obtenerListaAdmins(),
       maestros: this.maestroService.obtenerListaMaestros(),
-      alumnos: this.alumnoService.obtenerListaAlumnos(),
+      alumnos:  this.alumnoService.obtenerListaAlumnos(),
+      materias: this.materiasService.obtenerListaMaterias(),
     }).subscribe({
       next: (resp) => {
         this.totalAdmins   = resp.admins?.length   || 0;
         this.totalMaestros = resp.maestros?.length || 0;
         this.totalAlumnos  = resp.alumnos?.length  || 0;
 
+        this.calcularMaterias(resp.materias || []);
+
         this.dataReady = true;
         this.tryBuildCharts();
       },
       error: (err) => {
-        console.error('Error al cargar totales para gráficas', err);
+        console.error('Error al cargar datos para gráficas', err);
       }
     });
   }
 
+  private calcularMaterias(materias: any[]): void {
+    const countsDias = new Array(this.materiasPorDiaLabels.length).fill(0);
+    const countsProgramas: Record<string, number> = {};
+
+    materias.forEach((mat: any) => {
+      const diasStr: string = (mat.dias_json || mat.Dias || '').toString();
+      const carreraStr: string = (mat.carrera || '').toString().trim();
+
+      this.materiasPorDiaLabels.forEach((dia, index) => {
+        if (diasStr.toLowerCase().includes(dia.toLowerCase())) {
+          countsDias[index]++;
+        }
+      });
+
+      if (carreraStr) {
+        countsProgramas[carreraStr] = (countsProgramas[carreraStr] || 0) + 1;
+      }
+    });
+
+    this.materiasPorDiaData = countsDias;
+    this.programasLabels = Object.keys(countsProgramas);
+    this.programasData   = this.programasLabels.map(lbl => countsProgramas[lbl]);
+  }
+
   private tryBuildCharts(): void {
-    //Solo dibujar si ya tenemos vista y datos
     if (!this.viewReady || !this.dataReady) return;
 
-    const labels = ['Administradores', 'Maestros', 'Alumnos'];
-    const data   = [this.totalAdmins, this.totalMaestros, this.totalAlumnos];
+    const userLabels = ['Administradores', 'Maestros', 'Alumnos'];
+    const userData   = [this.totalAdmins, this.totalMaestros, this.totalAlumnos];
 
     this.histChart?.destroy();
     this.barChart?.destroy();
     this.pieChart?.destroy();
     this.doughnutChart?.destroy();
 
-    //Histograma
+    //materias por día
     this.histChart = new Chart(this.histCanvas.nativeElement, {
-      type: 'bar',
+      type: 'line',
       data: {
-        labels,
+        labels: this.materiasPorDiaLabels,
         datasets: [{
-          label: 'Usuarios registrados',
-          data,
+          label: 'Materias por día',
+          data: this.materiasPorDiaData,
+          borderColor: '#F88406',
+          backgroundColor: 'rgba(248, 132, 6, 0.25)',
+          fill: true,
+          tension: 0.25,
         }]
       },
       options: {
-        indexAxis: 'y',
         responsive: true,
         maintainAspectRatio: false,
+        plugins: {
+          legend: { display: true }
+        }
       }
     });
 
-    //Barras
+    //materias por programa
     this.barChart = new Chart(this.barCanvas.nativeElement, {
       type: 'bar',
       data: {
-        labels,
+        labels: this.programasLabels,
         datasets: [{
-          label: 'Usuarios registrados',
-          data,
+          label: 'Materias por programa',
+          data: this.programasData,
+          backgroundColor: 'rgba(135, 206, 250, 0.6)',
+          borderColor: 'rgba(135, 206, 250, 1)',
+          borderWidth: 1
         }]
       },
       options: {
@@ -115,13 +163,18 @@ export class GraficasScreenComponent implements OnInit, AfterViewInit {
       }
     });
 
-    //circular
+    //gráfica pie
     this.pieChart = new Chart(this.pieCanvas.nativeElement, {
       type: 'pie',
       data: {
-        labels,
+        labels: userLabels,
         datasets: [{
-          data,
+          data: userData,
+          backgroundColor: [
+            '#FCFF44',
+            '#F1C8F2',
+            '#31E731'
+          ]
         }]
       },
       options: {
@@ -130,13 +183,18 @@ export class GraficasScreenComponent implements OnInit, AfterViewInit {
       }
     });
 
-    //Dona?
+    //dona?
     this.doughnutChart = new Chart(this.doughnutCanvas.nativeElement, {
       type: 'doughnut',
       data: {
-        labels,
+        labels: userLabels,
         datasets: [{
-          data,
+          data: userData,
+          backgroundColor: [
+            '#F88406',
+            '#FCFF44',
+            '#31E7E7'
+          ]
         }]
       },
       options: {

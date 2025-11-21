@@ -141,7 +141,7 @@ export class RegistroMaestrosComponent implements OnInit {
           }
         );
       } else {
-        console.log("Actualización de alumno cancelada por el usuario");
+        console.log("Actualización de maestro cancelada por el usuario");
       }
     });
   }

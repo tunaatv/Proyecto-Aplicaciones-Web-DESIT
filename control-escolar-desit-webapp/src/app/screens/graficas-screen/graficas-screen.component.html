@@ -1,49 +1,55 @@
-<div class="graficas">
-  <div class="row mt-4">
-    <div class="col-lg-6 mb-4">
-      <mat-card class="grafica-card">
-        <mat-card-title>Histograma</mat-card-title>
-        <mat-card-content>
-          <div class="chart-wrapper">
+<div class="wrapper main-content-graficas">
+  <div class="section-home">
+    <div class="header-home"></div>
+
+    <div class="body-home">
+      <div class="row mt-5 mb-5">
+        <div class="col-12">
+          <span class="title-perfil">Análisis De Datos Del Sistema</span>
+        </div>
+      </div>
+
+      <div class="container">
+        <div class="row mt-3 mb-5" style="text-align: center;">
+          <div class="col-12">
+            <div class="alert alert-primary" role="alert">
+              <span class="title-table">Análisis De Materias</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gráficas de materias -->
+        <div class="graph-section">
+          <div class="graph">
+            <!-- Histograma -->
             <canvas #histCanvas></canvas>
           </div>
-        </mat-card-content>
-      </mat-card>
-    </div>
-
-    <div class="col-lg-6 mb-4">
-      <mat-card class="grafica-card">
-        <mat-card-title>Gráfica de barras</mat-card-title>
-        <mat-card-content>
-          <div class="chart-wrapper">
+          <div class="graph">
+            <!-- Barras -->
             <canvas #barCanvas></canvas>
           </div>
-        </mat-card-content>
-      </mat-card>
-    </div>
-  </div>
+        </div>
 
-  <div class="row mt-3">
-    <div class="col-lg-6 mb-4">
-      <mat-card class="grafica-card">
-        <mat-card-title>Gráfica circular</mat-card-title>
-        <mat-card-content>
-          <div class="chart-wrapper">
+        <div class="row mt-3 mb-5" style="text-align: center;">
+          <div class="col-12">
+            <div class="alert alert-primary" role="alert">
+              <span class="title-table">Análisis De Usuarios</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gráficas de usuarios -->
+        <div class="user-section">
+          <div class="graph">
+            <!-- Pie -->
             <canvas #pieCanvas></canvas>
           </div>
-        </mat-card-content>
-      </mat-card>
-    </div>
-
-    <div class="col-lg-6 mb-4">
-      <mat-card class="grafica-card">
-        <mat-card-title>Gráfica de dona</mat-card-title>
-        <mat-card-content>
-          <div class="chart-wrapper">
+          <div class="graph">
+            <!-- Dona -->
             <canvas #doughnutCanvas></canvas>
           </div>
-        </mat-card-content>
-      </mat-card>
+        </div>
+      </div>
     </div>
   </div>
 </div>

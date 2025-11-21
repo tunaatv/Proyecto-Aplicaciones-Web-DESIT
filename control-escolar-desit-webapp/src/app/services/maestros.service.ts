@@ -122,7 +122,7 @@ export class MaestrosService {
     return this.http.post<any>(`${environment.url_api}/maestros/`, data, { headers });
   }
 
-  // Petición para obtener un alumno por su ID
+  // Petición para obtener un maestro por su ID
   public obtenerMaestroPorID(idMaestro: number): Observable<any> {
     const token = this.facadeService.getSessionToken();
     let headers: HttpHeaders;
