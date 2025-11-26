@@ -133,7 +133,7 @@ export class MaestrosScreenComponent implements OnInit {
   }
 }
 
-//Esto va fuera de la llave que cierra la clase
+
 export interface DatosUsuario {
   id: number,
   id_trabajador: number;

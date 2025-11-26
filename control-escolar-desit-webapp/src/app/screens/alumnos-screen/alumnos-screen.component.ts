@@ -59,7 +59,7 @@ export class AlumnosScreenComponent implements OnInit{
   }
 
   ngAfterViewInit() {
-    // Asignar paginator y sort después de que los ViewChild estén listos
+    // Asignar paginator y sort después
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
 
@@ -89,7 +89,7 @@ export class AlumnosScreenComponent implements OnInit{
   }
 
   // Consumimos el servicio para obtener los alumnos
-  //Obtener maestros
+  //Obtener alumnos
   public obtenerAlumnos() {
     this.alumnosService.obtenerListaAlumnos().subscribe(
       (response) => {
@@ -104,7 +104,7 @@ export class AlumnosScreenComponent implements OnInit{
           });
           console.log("Alumnos: ", this.lista_alumnos);
 
-          // Reemplazamos dataSource
+          //Reemplazamos dataSource
           this.dataSource.data = this.lista_alumnos as DatosUsuario[];
         }
       }, (error) => {
@@ -157,7 +157,6 @@ export class AlumnosScreenComponent implements OnInit{
   }
 }
 
-//Esto va fuera de la llave que cierra la clase
 export interface DatosUsuario {
   id: number,
   matricula: number;
