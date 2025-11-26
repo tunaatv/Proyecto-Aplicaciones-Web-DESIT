@@ -24,7 +24,8 @@ export class MaestrosScreenComponent implements OnInit {
   //Para la tabla
   //displayedColumns: string[] = ['id_trabajador', 'nombre', 'email', 'fecha_nacimiento', 'telefono', 'rfc', 'cubiculo', 'area_investigacion', 'editar', 'eliminar'];
   displayedColumns: string[] = [];
-  dataSource = new MatTableDataSource<DatosUsuario>(this.lista_maestros as DatosUsuario[]);
+  //dataSource = new MatTableDataSource<DatosUsuario>(this.lista_maestros as DatosUsuario[]);
+  dataSource = new MatTableDataSource<DatosUsuario>([]);
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -80,14 +81,7 @@ export class MaestrosScreenComponent implements OnInit {
           console.log("Maestros: ", this.lista_maestros);
 
           // Reemplazamos dataSource
-          this.dataSource = new MatTableDataSource<DatosUsuario>(this.lista_maestros as DatosUsuario[]);
-          // Si los ViewChilds ya están inicializados, assignarlos
-          if (this.paginator) {
-            this.dataSource.paginator = this.paginator;
-          }
-          if (this.sort) {
-            this.dataSource.sort = this.sort;
-          }
+          this.dataSource.data = this.lista_maestros as DatosUsuario[];
         }
       }, (error) => {
         console.error("Error al obtener la lista de maestros: ", error);

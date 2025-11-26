@@ -22,7 +22,8 @@ export class MateriasScreenComponent implements OnInit{
 
   //Para la tabla
   displayedColumns: string[] = [];
-  dataSource = new MatTableDataSource<DatosMateria>(this.lista_materias as DatosMateria[]);
+  //dataSource = new MatTableDataSource<DatosMateria>(this.lista_materias as DatosMateria[]);
+  dataSource = new MatTableDataSource<DatosMateria>([]);
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -83,15 +84,7 @@ export class MateriasScreenComponent implements OnInit{
           });
 
           // Reemplazamos dataSource con la lista de materias
-          this.dataSource = new MatTableDataSource<any>(this.lista_materias);
-
-          // Asignar paginator y sort si ya están disponibles
-          if (this.paginator) {
-            this.dataSource.paginator = this.paginator;
-          }
-          if (this.sort) {
-            this.dataSource.sort = this.sort;
-          }
+          this.dataSource.data = this.lista_materias as DatosMateria[];
         }
       },
       (error) => {

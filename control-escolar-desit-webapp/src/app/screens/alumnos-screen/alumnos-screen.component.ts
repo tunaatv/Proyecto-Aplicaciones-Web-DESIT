@@ -23,7 +23,9 @@ export class AlumnosScreenComponent implements OnInit{
   //Para la tabla
   //displayedColumns: string[] = ['matricula', 'nombre', 'email', 'fecha_nacimiento', 'telefono', 'rfc', 'edad', 'editar', 'eliminar'];
   displayedColumns: string[] = [];
-  dataSource = new MatTableDataSource<DatosUsuario>(this.lista_alumnos as DatosUsuario[]);
+  //dataSource = new MatTableDataSource<DatosUsuario>(this.lista_alumnos as DatosUsuario[]);
+  dataSource = new MatTableDataSource<DatosUsuario>([]);
+
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -65,16 +67,16 @@ export class AlumnosScreenComponent implements OnInit{
     this.dataSource.sortingDataAccessor = (item: any, property: string) => {
       switch (property) {
         case 'id':
-          // usa id numérico (asegúrate que exista en los datos)
+          // usa id numérico
           return item.id ?? 0;
         case 'matricula':
           // si matricula es string o número
           return (item.matricula ?? '').toString().toLowerCase();
         case 'nombre':
-          // ordenar por nombre (first_name)
+          // ordenar por nombre
           return (item.first_name ?? '').toString().toLowerCase();
         case 'apellidos':
-          // ordenar por apellidos (last_name)
+          // ordenar por apellidos
           return (item.last_name ?? '').toString().toLowerCase();
         case 'fecha_nacimiento':
           // devolver timestamp para ordenar por fecha correctamente
@@ -103,14 +105,7 @@ export class AlumnosScreenComponent implements OnInit{
           console.log("Alumnos: ", this.lista_alumnos);
 
           // Reemplazamos dataSource
-          this.dataSource = new MatTableDataSource<DatosUsuario>(this.lista_alumnos as DatosUsuario[]);
-          // Si los ViewChilds ya están inicializados, assignarlos
-          if (this.paginator) {
-            this.dataSource.paginator = this.paginator;
-          }
-          if (this.sort) {
-            this.dataSource.sort = this.sort;
-          }
+          this.dataSource.data = this.lista_alumnos as DatosUsuario[];
         }
       }, (error) => {
         console.error("Error al obtener la lista de alumnoss: ", error);
