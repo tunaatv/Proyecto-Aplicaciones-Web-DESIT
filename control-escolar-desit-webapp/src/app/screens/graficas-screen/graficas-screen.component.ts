@@ -116,12 +116,19 @@ export class GraficasScreenComponent implements OnInit, AfterViewInit {
     const userLabels = ['Administradores', 'Maestros', 'Alumnos'];
     const userData   = [this.totalAdmins, this.totalMaestros, this.totalAlumnos];
 
+    // Colores consistentes
+    const userColors = [
+      '#0052CC', // Administradores - azul
+      '#4C9AFF', // Maestros        - morado
+      '#9CA3AF'  // Alumnos         - verde
+    ];
+
     this.histChart?.destroy();
     this.barChart?.destroy();
     this.pieChart?.destroy();
     this.doughnutChart?.destroy();
 
-    //materias por día
+    //materias por dia
     this.histChart = new Chart(this.histCanvas.nativeElement, {
       type: 'line',
       data: {
@@ -129,8 +136,8 @@ export class GraficasScreenComponent implements OnInit, AfterViewInit {
         datasets: [{
           label: 'Materias por día',
           data: this.materiasPorDiaData,
-          borderColor: '#F88406',
-          backgroundColor: 'rgba(248, 132, 6, 0.25)',
+          borderColor: '#2F80ED',
+          backgroundColor: 'rgba(47,128,237,0.20)',
           fill: true,
           tension: 0.25,
         }]
@@ -152,8 +159,8 @@ export class GraficasScreenComponent implements OnInit, AfterViewInit {
         datasets: [{
           label: 'Materias por programa',
           data: this.programasData,
-          backgroundColor: 'rgba(135, 206, 250, 0.6)',
-          borderColor: 'rgba(135, 206, 250, 1)',
+          backgroundColor: 'rgba(39,174,96,0.60)',
+          borderColor: 'rgba(39,174,96,1)',
           borderWidth: 1
         }]
       },
@@ -163,18 +170,14 @@ export class GraficasScreenComponent implements OnInit, AfterViewInit {
       }
     });
 
-    //gráfica pie
+    //Pastel
     this.pieChart = new Chart(this.pieCanvas.nativeElement, {
       type: 'pie',
       data: {
         labels: userLabels,
         datasets: [{
           data: userData,
-          backgroundColor: [
-            '#FCFF44',
-            '#F1C8F2',
-            '#31E731'
-          ]
+          backgroundColor: userColors
         }]
       },
       options: {
@@ -190,11 +193,7 @@ export class GraficasScreenComponent implements OnInit, AfterViewInit {
         labels: userLabels,
         datasets: [{
           data: userData,
-          backgroundColor: [
-            '#F88406',
-            '#FCFF44',
-            '#31E7E7'
-          ]
+          backgroundColor: userColors
         }]
       },
       options: {
@@ -203,4 +202,5 @@ export class GraficasScreenComponent implements OnInit, AfterViewInit {
       }
     });
   }
+
 }
